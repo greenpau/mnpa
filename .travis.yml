@@ -1,0 +1,32 @@
+---
+language: cpp
+
+before_install:
+  - sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32
+  - sudo apt-get install -y software-properties-common
+  - sudo apt-add-repository -y "deb http://archive.ubuntu.com/ubuntu/ trusty main restricted universe multiverse"
+  - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -y -qq
+
+install:
+  - sudo apt-get install -y -qq gcc-5 g++-5 make git
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 500
+
+env:
+  global:
+    # COVERITY_SCAN_TOKEN
+    - secure: "BIzRV4dfgiHgdWrN-FQD5Q"
+
+addons:
+  coverity_scan:
+    project:
+      name: greenpau/mnpa
+      version: 1.0
+      description: Multicast Network Performance Analyzer (MNPA) Suite
+    build_command: make type=travis
+    branch_pattern: coverity_scan
+
+script:
+  - g++ -v
+  - ip addr show
+  - make type=travis && make test type=travis

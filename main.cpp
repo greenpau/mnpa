@@ -224,7 +224,7 @@ void help(int code) {
     cout << "  -t, --threads         number of concurrent threads, default: 1" << endl;
     cout << "  -p, --priority        program scheduling priority, default: 0" << endl;
     cout << "  -d, --daemonize       run in background, default: disabled" << endl;
-    cout << "  -l, --log             enable logging, default: disabled" << endl;
+    cout << "  -v, --verbose         enable logging, default: disabled" << endl;
     cout << "  --random-payload      enable payload randomization, default: disabled" << endl;
     cout << "  --packet-storm        send packets w/out waiting for conditions, default: disabled" << endl;
     cout << endl;
@@ -384,12 +384,19 @@ void receiver_thread(struct MulticastReceiver receiver) {
                   std::to_string(ntohs(receiver.listener.sin_port)) + \
                   " failed to inform kernel of multicast group");
             close(sockfd);
+            mu_thrids.lock();
+            thrids[thrid] = 1;
+            mu_thrids.unlock();
             return;
         }
         if (IGMP_REPORT_ONLY == false) {
             break;
-        } else {
-            std::this_thread::sleep_for(std::chrono::seconds(15));
+        }
+        auto sleep_timer = std::chrono::high_resolution_clock::now() + std::chrono::seconds(30);
+        for (;;) {
+            if (stopped == true) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            if (std::chrono::high_resolution_clock::now() >= sleep_timer) break;
         }
         if (stopped == true) break;
     }

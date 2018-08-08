@@ -9,16 +9,15 @@
 FROM fedora:latest
 MAINTAINER Paul Greenberg @greenpau
 
-RUN dnf -y install vim && dnf -y update
-RUN dnf -y install zlib zlib-devel zlib-static bzip2 bzip2-libs bzip2-devel \
-    ncurses ncurses-libs ncurses-devel ncurses-static readline readline-devel
-RUN dnf -y install gdbm gdbm-devel sqlite sqlite-devel libxml2 libxml2-devel \
+RUN dnf -y update
+RUN dnf -y install vim zlib zlib-devel zlib-static bzip2 bzip2-libs bzip2-devel \
+    ncurses ncurses-libs ncurses-devel ncurses-static readline readline-devel \
+    gdbm gdbm-devel sqlite sqlite-devel libxml2 libxml2-devel \
     libxml2-static libxslt libxslt-devel openssl openssl-devel openssl-static \
-    openssl-libs wget xz xz-devel xz-libs pcre pcre-devel
-RUN dnf -y install pcre-static pcre-tools libstdc++ libstdc++-devel libstdc++-static \
+    openssl-libs wget xz xz-devel xz-libs pcre pcre-devel \
+    pcre-static pcre-tools libstdc++ libstdc++-devel libstdc++-static \
     libstdc++-docs json-devel libpqxx libpqxx-devel libyaml libyaml-devel \
     procps-ng procps-ng-devel libcap libcap-devel lsof libpcap libpcap-devel \
-    kernel-devel man unzip git iproute sudo
-RUN dnf -y install gcc gcc-c++ glibc* kernel-headers
-RUN dnf -y install make
+    kernel-devel man unzip git iproute sudo make netsniff-ng \
+    gcc gcc-c++ glibc* kernel-headers
 RUN cd /tmp && git clone https://github.com/greenpau/mnpa.git && cd mnpa && make && make install
